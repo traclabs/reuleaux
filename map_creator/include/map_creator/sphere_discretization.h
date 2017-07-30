@@ -116,6 +116,12 @@ public:
 					 const std::vector< geometry_msgs::Pose >& grasp_poses,
 					 const std::multimap<std::vector<double>, std::vector<double> > &PoseColFilter, const float resolution);
 
+
+  void associatePoseFloor(std::multimap< std::vector< double >, std::vector< double > >& baseTrnsCol,
+                                           const std::vector< geometry_msgs::Pose >& grasp_poses,
+                                           const std::multimap< std::vector< double >, std::vector< double > >& PoseColFilter,
+                                           const float resolution);
+
   //! Compare two vectors, of length 3, for multimap search
   struct vec_comp_
   {
