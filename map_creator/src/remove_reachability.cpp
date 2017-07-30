@@ -67,10 +67,6 @@ void remove_obstacles_reachability::createObstaclesPointCloud(octomap::OcTree &t
         octomap::OcTreeNode* newNode = (*it)->getChild(k);
         newNode->addValue((*it)->getOccupancy());
       }
-
-
-
-
     }
   }
   while(collapsed_occ_nodes.size() >0);
