@@ -43,8 +43,7 @@ private:
   ros::Subscriber subscriber_planning_scene_;
   ros::Publisher pub_filtered_reachability_;
   ros::Publisher pub_colliding_reachability_;
-  //ros::ServiceClient client_get_planning_scene_;
-  //moveit_msgs::GetPlanningScene scene_srv_;
+
   octomap::OcTree* collision_octree_;
   map_creator::WorkSpace reachability_map_;
   double reachability_resolution_;

@@ -2,39 +2,32 @@
 #include<map_creator/remove_reachability.h>
 #include<octomap/OcTreeBaseImpl.h>
 
-remove_obstacles_reachability::remove_obstacles_reachability()
+remove_obstacles_reachability::remove_obstacles_reachability():scene_rcvd_(false)
 {
-  scene_rcvd_ = false;
   subscriber_planning_scene_ = nh_.subscribe("/move_group/monitored_planning_scene",1,&remove_obstacles_reachability::readPlanningScene,this);
-  //client_get_planning_scene_ = nh_.serviceClient<moveit_msgs::GetPlanningScene>("/get_planning_scene", true);
-  //scene_srv_.request.components.components = scene_srv_.request.components.OCTOMAP;
   map_rcvd_ = false;
   subscriber_reachability_ = nh_.subscribe("/reachability_map",1, &remove_obstacles_reachability::readMap, this);
-
   pub_filtered_reachability_ = nh_.advertise<map_creator::WorkSpace>("/reachability_map_filtered", 0);
   pub_colliding_reachability_ = nh_.advertise<map_creator::WorkSpace>("reachability_map_colliding", 0);
 }
 
 remove_obstacles_reachability::~remove_obstacles_reachability()
 {
-  ROS_INFO("Shutting down remove obstacles reachabilyt");
+  ROS_INFO("Shutting down remove obstacles reachability");
   ros::shutdown();
 }
 
 void remove_obstacles_reachability::readPlanningScene(const moveit_msgs::PlanningScene scene_msg)
 {
-  ROS_INFO("Planning scene received");
-  if(scene_msg.world.octomap.octomap.data.size() == 0)
+  scene_rcvd_ = false;
+  if(scene_msg.world.octomap.octomap.data.size() > 0)
   {
-    ROS_ERROR("No octomap nodes found! Nothing to filter");
-    ros::shutdown();
+    ROS_INFO("Planning scene received");
+    octomap_msgs::Octomap octomap = scene_msg.world.octomap.octomap;
+    octomap::AbstractOcTree* abstract_tree = octomap_msgs::msgToMap(octomap);
+    collision_octree_ = (octomap::OcTree*) abstract_tree;
+    scene_rcvd_ = true;
   }
-  octomap_msgs::OctomapWithPose octomap_pose = scene_msg.world.octomap;
-  octomap_msgs::Octomap octomap = octomap_pose.octomap;
- octomap::AbstractOcTree* abstract_tree = octomap_msgs::msgToMap(octomap);
-  collision_octree_ = (octomap::OcTree*) abstract_tree;
-  scene_rcvd_ = true;
-  subscriber_planning_scene_.shutdown();
 }
 
 void remove_obstacles_reachability::readMap(const map_creator::WorkSpace msg)
@@ -46,56 +39,21 @@ void remove_obstacles_reachability::readMap(const map_creator::WorkSpace msg)
   subscriber_reachability_.shutdown();
 }
 
-bool hasChildren(const octomap::OcTreeNode* node)
-{
-  for(unsigned int i=0;i<8;++i)\
-  {
-    if(node->childExists(i))
-      return true;
-    else
-      return false;
-  }
-}
 
 
 void remove_obstacles_reachability::createObstaclesPointCloud(octomap::OcTree &tree, pcl::PointCloud<pcl::PointXYZ>::Ptr obstacle_vertices)
 {
   unsigned int max_depth = tree.getTreeDepth();
-  if(!obstacle_vertices->empty())
+  if( !obstacle_vertices->empty() )
   {
-    obstacle_vertices->clear();
+      obstacle_vertices->clear();
   }
-  // Expand collapsed occupied nodes until all occupied leaves are at maximum depth
-  std::vector<octomap::OcTreeNode*> collapsed_occ_nodes;
-  do
-  {
-    collapsed_occ_nodes.clear();
-    for(octomap::OcTree::iterator it = tree.begin(); it != tree.end(); ++it)
-    {
-      if(tree.isNodeOccupied(*it) &&  it.getDepth() <max_depth )
-      {
-        collapsed_occ_nodes.push_back((&(*it)));
-      }
-    }
-
-    //std::cout<<" collapsed_occ_nodes size: "<< collapsed_occ_nodes.size()<<std::endl;
-    for(std::vector<octomap::OcTreeNode*>::iterator it = collapsed_occ_nodes.begin(); it != collapsed_occ_nodes.end(); ++it)
-    {
-       //tree.expandNode(*it);
-      assert(!hasChildren(*it));
-      for(unsigned int k=0;k<8;++k)
-      {
-        (*it)->createChild(k);
-        octomap::OcTreeNode* newNode = (*it)->getChild(k);
-        newNode->addValue((*it)->getOccupancy());
-      }
-    }
-  }
-  while(collapsed_occ_nodes.size() >0);
   // Create set of occupied voxel centers (and vertices) at max depth
   std::set<std::vector<double> > points_set;
+  points_set.clear();
   for(octomap::OcTree::leaf_iterator it = tree.begin_leafs(max_depth), end = tree.end_leafs(); it !=end; ++it)
   {
+
     if(tree.isNodeOccupied(*it))
     {
       double voxel_size = it.getSize();
@@ -106,9 +64,14 @@ void remove_obstacles_reachability::createObstaclesPointCloud(octomap::OcTree &t
           for(int dz = -1; dz<=1;++dz)
           {
             std::vector<double> point;
+            std::vector<double> point_center;
+            point_center.push_back(it.getX());
+            point_center.push_back(it.getY());
+            point_center.push_back(it.getZ());
+            points_set.insert(point_center);
             point.push_back(it.getX()+(dx*voxel_size/2));
             point.push_back(it.getY()+(dy*voxel_size/2));
-            point.push_back(it.getY()+(dz*voxel_size/2));
+            point.push_back(it.getZ()+(dz*voxel_size/2));
             points_set.insert(point);
           }
         }
@@ -128,7 +91,6 @@ void remove_obstacles_reachability::createObstaclesPointCloud(octomap::OcTree &t
   }
 }
 
-
 void remove_obstacles_reachability::createFilteredReachability(filterType type, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &search_tree, map_creator::WorkSpace &filtered_map, map_creator::WorkSpace &colliding_map)
 {
   filtered_map.header = reachability_map_.header;
@@ -138,7 +100,6 @@ void remove_obstacles_reachability::createFilteredReachability(filterType type, 
 
   double circumscribe_reachability_radius = sqrt(3)* reachability_resolution_/2.0;
   double inscribe_reachability_radius = reachability_resolution_/2.0;
-  std::cout<<"points in search tree: "<<search_tree.getInputCloud()->points.size()<<std::endl;
   for(int i=0;i<reachability_map_.WsSpheres.size();++i)
   {
     geometry_msgs::Point32 voxel_center = reachability_map_.WsSpheres[i].point;
@@ -148,8 +109,6 @@ void remove_obstacles_reachability::createFilteredReachability(filterType type, 
     search_point.z = voxel_center.z;
     std::vector<int> point_idx_vec;
     std::vector<float> point_sqrd_dis;
-
-
 
     switch(type)
     {
@@ -170,7 +129,6 @@ void remove_obstacles_reachability::createFilteredReachability(filterType type, 
     }
    }
 
-    //std::cout<<"point_idx_vec.size(): "<<point_idx_vec.size()<<std::endl;
     if(point_idx_vec.size() == 0)
     {
       filtered_map.WsSpheres.push_back(reachability_map_.WsSpheres[i]);
@@ -186,26 +144,20 @@ void remove_obstacles_reachability::createFilteredReachability(filterType type, 
   ROS_INFO_STREAM( "Number of spheres remaining: "<<filtered_map.WsSpheres.size() );
 }
 
-
-
 void remove_obstacles_reachability::spin(filterType filter_type)
 {
   ros::Rate loop_rate(SPIN_RATE);
   pcl::PointCloud<pcl::PointXYZ>::Ptr obstacles_cloud(new pcl::PointCloud <pcl::PointXYZ>);
   while(ros::ok())
   {
-    if(scene_rcvd_ && obstacles_cloud->points.size() == 0)
+    if (scene_rcvd_ )
     {
-      ROS_INFO("Creating obstacles point cloud");
+      ROS_INFO("Received new scene");
       createObstaclesPointCloud(*collision_octree_, obstacles_cloud);
+      std::cout<<"Size of obstacles_cloud: "<<obstacles_cloud->points.size()<<std::endl;
     }
 
-    else if(!scene_rcvd_)
-    {
-      ROS_ERROR("Awaiting planning scene");
-    }
-
-    if(map_rcvd_)
+    else if(!map_rcvd_)
     {
       ROS_WARN("Awaiting reachability map");
     }
