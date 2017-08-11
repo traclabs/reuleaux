@@ -5,9 +5,9 @@
 #include<ros/ros.h>
 #include<moveit_msgs/GetPlanningScene.h>
 
-#include<octomap/octomap.h>
-#include<octomap_msgs/conversions.h>
-#include<octomap/AbstractOcTree.h>
+#include <octomap/octomap.h>
+#include <octomap_msgs/conversions.h>
+#include <octomap/AbstractOcTree.h>
 
 #include<pcl/point_cloud.h>
 #include<pcl/octree/octree.h>
@@ -34,18 +34,22 @@ public:
 
 private:
   void readMap(const map_creator::WorkSpace msg);
+  void readPlanningScene(const moveit_msgs::PlanningScene scene_msg);
   void createObstaclesPointCloud(octomap::OcTree& tree, pcl::PointCloud<pcl::PointXYZ>::Ptr obstacle_vertices);
   void createFilteredReachability(filterType type, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ>& search_tree, map_creator::WorkSpace& filtered_map, map_creator::WorkSpace& colliding_map);
 
   ros::NodeHandle nh_;
   ros::Subscriber subscriber_reachability_;
+  ros::Subscriber subscriber_planning_scene_;
   ros::Publisher pub_filtered_reachability_;
   ros::Publisher pub_colliding_reachability_;
-  ros::ServiceClient client_get_planning_scene_;
-  moveit_msgs::GetPlanningScene scene_srv_;
+  //ros::ServiceClient client_get_planning_scene_;
+  //moveit_msgs::GetPlanningScene scene_srv_;
+  octomap::OcTree* collision_octree_;
   map_creator::WorkSpace reachability_map_;
   double reachability_resolution_;
-
+  bool map_rcvd_;
+  bool scene_rcvd_;
 };
 
 

@@ -66,16 +66,20 @@ ReachMapDisplay::ReachMapDisplay()
 
   upper_bound_reachability_ =
       new rviz::IntProperty("Highest Reachability Index", 100, "Highest Reachability index.", this);
+
 }
 
 void ReachMapDisplay::onInitialize()
 {
   MFDClass::onInitialize();
+
 }
 
 ReachMapDisplay::~ReachMapDisplay()
 {
+
 }
+
 void ReachMapDisplay::reset()
 {
   MFDClass::reset();
@@ -106,11 +110,16 @@ void ReachMapDisplay::updateColorAndAlphaSphere()
 {
   float alpha = sphere_alpha_property_->getFloat();
   Ogre::ColourValue color = sphere_color_property_->getOgreColor();
-
-  for (size_t i = 0; i < visuals_.size(); i++)
-  {
-    visuals_[i]->setColorSphere(color.r, color.g, color.b, alpha);
-  }
+  if(is_byReachability_ )
+    for (size_t i = 0; i < visuals_.size(); i++)
+    {
+      visuals_[i]->setColorSpherebyRI(alpha);
+    }
+  else
+    for (size_t i = 0; i < visuals_.size(); i++)
+    {
+       visuals_[i]->setColorSphere(color.r, color.g, color.b, alpha);
+    }
 }
 
 void ReachMapDisplay::updateSphereSize()
@@ -124,6 +133,7 @@ void ReachMapDisplay::updateSphereSize()
 
 void ReachMapDisplay::processMessage(const map_creator::WorkSpace::ConstPtr& msg)
 {
+  visuals_.clear();
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;
   if (!context_->getFrameManager()->getTransform(msg->header.frame_id, msg->header.stamp, position, orientation))
