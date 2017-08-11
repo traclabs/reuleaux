@@ -61,12 +61,12 @@ int main(int argc, char **argv)
         ws.WsSpheres.push_back(wss);
       }
 
+
     while (ros::ok())
     {
       workspace_pub.publish(ws);
-
       ros::spinOnce();
-      sleep(5);
+      sleep(1);
       ++count;
     }
   }
