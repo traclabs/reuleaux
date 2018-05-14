@@ -125,6 +125,7 @@ void ReachMapDisplay::updateSphereSize()
 
 void ReachMapDisplay::processMessage(const map_creator::WorkSpace::ConstPtr& msg)
 {
+  visuals_.resize(0);
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;
   if (!context_->getFrameManager()->getTransform(msg->header.frame_id, msg->header.stamp, position, orientation))
