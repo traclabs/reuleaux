@@ -44,7 +44,7 @@ int main(int argc, char **argv)
   
   pnh.getParam("resolution", resolution_);
   pnh.getParam("filename", file_);
-  filename_ = path + file_;
+  filename_ = path + file_ + ".h5";
 
   // ros::Publisher workspace_pub = n.advertise<map_creator::WorkSpace>("workspace", 10);
   ros::Rate loop_rate(10);  
