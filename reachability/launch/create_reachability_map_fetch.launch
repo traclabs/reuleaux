@@ -8,7 +8,8 @@
   <arg name="urdf_param" default="/robot_description"/>
 
 
-  <param name="robot_description" command="$(find xacro)/xacro '$(find tracbot_description)/robots/tracbot.urdf.xacro'"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find craftsman_robots)/urdf/fetch/fetch.urdf.xacro'"/>
+
 
 
   <node name="create_reachability_map" pkg="reachability" type="create_reachability_map" respawn="false" output="screen">
