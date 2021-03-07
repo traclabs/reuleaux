@@ -153,6 +153,7 @@ int main(int argc, char **argv)
 
     // Kinematics k;
 
+    return 0;  // ANA HACK
     MultiMapPtr pose_col_filter;
     VectorOfVectors ik_solutions;
     ik_solutions.reserve( pose_col.size() );
