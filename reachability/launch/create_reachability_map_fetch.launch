@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="resolution" default="0.10"/>
+  <arg name="resolution" default="0.50"/>
   <arg name="filename" default="fetch_10"/>
   <arg name="chain_start" default="base_link"/>
   <arg name="chain_end" default="grasp_link"/>
