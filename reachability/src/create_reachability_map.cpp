@@ -45,7 +45,7 @@ int main(int argc, char **argv)
   pnh.getParam("resolution", resolution_);
   pnh.getParam("filename", file_);
   filename_ = path + file_ + ".h5";
-
+  ROS_WARN("Filename: %s ", filename_.c_str());
   // ros::Publisher workspace_pub = n.advertise<map_creator::WorkSpace>("workspace", 10);
   ros::Rate loop_rate(10);  
   int count = 0;
@@ -155,10 +155,14 @@ int main(int argc, char **argv)
 
     // Creating maps now. Saving map to dataset
     hdf5_dataset::Hdf5Dataset h5(filename_);
-    h5.saveReachMapsToDataset(pose_col_filter, sphere_color, resolution_);
-
+    if(!h5.saveReachMapsToDataset(pose_col_filter, sphere_color, resolution_))
+    {
+    printf("Error saving reach maps!!!!!!!!!!!!!!!!!!! \n");
+    return 2;
+    }
+    
     double dif = ros::Duration( ros::Time::now() - startit).toSec();
-    ROS_INFO("Elasped time is %.2lf seconds.", dif);
+    ROS_INFO("Elapsed time is %.2lf seconds.", dif);
     ROS_INFO("Completed");
     ros::spinOnce();
     // sleep(10000);

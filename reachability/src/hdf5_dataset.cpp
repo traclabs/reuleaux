@@ -114,8 +114,10 @@ bool Hdf5Dataset::checkPath(std::string path)
   if (stat(path.c_str(), &st)!=0)
   {
     ROS_INFO("Path does not exist yet");
-    //return false;
+    return false;
   }
+  
+  return true;
 }
 
 void Hdf5Dataset::createPath(std::string path)
@@ -137,6 +139,8 @@ bool Hdf5Dataset::checkFileName(std::string filename)
     ROS_ERROR("Please provide an extension of .h5 It will make life easy");
     exit(1);
   }
+  
+  return true;
 }
 
 bool Hdf5Dataset::saveCapMapsToDataset(VectorOfVectors &capability_data, float &resolution)
@@ -192,10 +196,9 @@ H5P_DEFAULT);
 
 bool Hdf5Dataset::saveReachMapsToDataset( MultiMapPtr& poses,  MapVecDoublePtr& spheres, float resolution)
 {
+
   if(!checkPath(this->path_))
-  {
     createPath(this->path_);
-  }
 
   //Creating Multimap to Straight vector<vector<double> > //Can take this function to a new class
   std::vector< std::vector< double > > pose_reach;
