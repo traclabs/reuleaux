@@ -139,7 +139,9 @@ void SphereDiscretization::make_sphere_poses(const octomap::point3d& origin,
         position_vector[index].z = cos(theta);
 
         tf2::Quaternion quat;
-        quat.setRPY(0, ((M_PI / 2) + theta), phi);
+        //quat.setRPY(0, ((M_PI / 2) + theta), phi);
+	quat.setRPY(0, ((M_PI) + theta), phi);
+
         quat.normalize();
         quaternion[index] = quat;
         index++;

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="resolution" default="0.10"/>
+  <arg name="filename" default="fetch_10"/>
+  <arg name="chain_start" default="base_link"/>
+  <arg name="chain_end" default="grasp_link"/>
+  <arg name="urdf_param" default="/robot_description"/>
+
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find tracbot_description)/robots/tracbot.urdf.xacro'"/>
+
+
+  <node name="create_reachability_map" pkg="reachability" type="create_reachability_map" respawn="false" output="screen">
+    <param name="resolution" value="$(arg resolution)"/>
+    <param name="filename" value="$(arg filename)"/>
+    <param name="chain_start" value="$(arg chain_start)"/>
+    <param name="chain_end" value="$(arg chain_end)"/>
+    <param name="urdf_param" value="$(arg urdf_param)"/>
+  </node>
+
+</launch>

@@ -27,7 +27,7 @@ protected:
   double divider_;
   
 public:
-  SphereDiscretization(){ divider_ = 5.0; }
+  SphereDiscretization(){ printf("Who are we calling? \n"); divider_ = 5.0; }
 
   ~SphereDiscretization(){}
 
