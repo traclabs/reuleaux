@@ -5,7 +5,7 @@
 
 #include <rviz/message_filter_display.h>
 
-#include <map_creator/WorkSpace.h>
+#include <reachability_msgs/WorkSpace.h>
 #endif
 
 namespace Ogre
@@ -25,7 +25,7 @@ class IntProperty;
 namespace workspace_visualization
 {
 class ReachMapVisual;
-class ReachMapDisplay : public rviz::MessageFilterDisplay< map_creator::WorkSpace >
+class ReachMapDisplay : public rviz::MessageFilterDisplay< reachability_msgs::WorkSpace >
 {
   Q_OBJECT
 public:
@@ -61,7 +61,7 @@ private Q_SLOTS:
   void updateSphereSize();
 
 private:
-  void processMessage(const map_creator::WorkSpace::ConstPtr& msg);
+  void processMessage(const reachability_msgs::WorkSpace::ConstPtr& msg);
   std::vector< boost::shared_ptr< ReachMapVisual > > visuals_;
 
   rviz::Property* arrow_category_;

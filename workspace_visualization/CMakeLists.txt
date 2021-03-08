@@ -3,7 +3,7 @@ project(workspace_visualization)
 
 find_package(catkin REQUIRED COMPONENTS
     rviz
-    map_creator
+    reachability_msgs
 )
 catkin_package(INCLUDE_DIRS  )
 include_directories(include ${catkin_INCLUDE_DIRS})

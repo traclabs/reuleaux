@@ -19,6 +19,7 @@
   <depend>trac_ik_lib</depend>
   <depend>kdl_parser</depend>
   <depend>urdf</depend>
+  <depend>reachability_msgs</depend>
   
   <export>
   </export>

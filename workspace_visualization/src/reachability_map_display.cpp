@@ -123,7 +123,7 @@ void ReachMapDisplay::updateSphereSize()
   }
 }
 
-void ReachMapDisplay::processMessage(const map_creator::WorkSpace::ConstPtr& msg)
+void ReachMapDisplay::processMessage(const reachability_msgs::WorkSpace::ConstPtr& msg)
 {
   visuals_.resize(0);
   Ogre::Quaternion orientation;

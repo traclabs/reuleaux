@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>reachability_msgs</name>
+  <version>1.0.0</version>
+  <description>The craftsman_msgs package</description>
+  <maintainer email="ana@traclabs.com">Ana</maintainer>
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>message_generation</depend>
+  <depend>message_runtime</depend>
+  <depend>control_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>octomap_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>nav_msgs</depend>
+  <export>
+  </export>
+</package>

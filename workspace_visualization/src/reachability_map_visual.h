@@ -1,7 +1,7 @@
 #ifndef ReachMap_VISUAL_H
 #define ReachMap_VISUAL_H
 
-#include <map_creator/WorkSpace.h>
+#include <reachability_msgs/WorkSpace.h>
 
 namespace Ogre
 {
@@ -23,7 +23,7 @@ class ReachMapVisual
 public:
   ReachMapVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node, rviz::DisplayContext* display);
   virtual ~ReachMapVisual();
-  void setMessage(const map_creator::WorkSpace::ConstPtr& msg, bool do_display_arrow, bool do_display_sphere,
+  void setMessage(const reachability_msgs::WorkSpace::ConstPtr& msg, bool do_display_arrow, bool do_display_sphere,
                   int low_ri, int high_ri, int shape_choice, int disect_choice);
   void setFramePosition(const Ogre::Vector3& position);
   void setFrameOrientation(const Ogre::Quaternion& orientation);

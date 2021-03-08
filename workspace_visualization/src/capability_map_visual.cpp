@@ -24,7 +24,7 @@ CapMapVisual::~CapMapVisual()
   scene_manager_->destroySceneNode(frame_node_);
 }
 
-void CapMapVisual::setMessage(const map_creator::capability::ConstPtr& msg, int low_ri, int high_ri, int disect_choice)
+void CapMapVisual::setMessage(const reachability_msgs::capability::ConstPtr& msg, int low_ri, int high_ri, int disect_choice)
 {
   int low_SphereSize, up_SphereSize;
   switch (disect_choice)

@@ -13,25 +13,13 @@ find_package(catkin REQUIRED COMPONENTS
   trac_ik_lib
   kdl_parser
   urdf
+  reachability_msgs
 )
 
 find_package(octomap REQUIRED)
 find_package(PkgConfig)
 pkg_check_modules(HDF5 REQUIRED hdf5)
 
-#add_message_files(
-# FILES
-# capShape.msg
-# capability.msg
-# WsSphere.msg
-# WorkSpace.msg
-# 
-#)
-
-#generate_messages(
-# DEPENDENCIES
-# geometry_msgs std_msgs
-#)
 
 catkin_package(
 
@@ -46,6 +34,7 @@ catkin_package(
     message_runtime
     kdl_parser
     urdf
+    reachability_msgs
 )
 
 include_directories(include
@@ -67,21 +56,21 @@ target_link_libraries(hdf5_dataset  ${catkin_LIBRARIES} ${HDF5_LINK_LIBRARIES})
 add_executable(create_reachability_map src/create_reachability_map.cpp)
 target_link_libraries(create_reachability_map sphere_discretization robot_kinematics hdf5_dataset ${catkin_LIBRARIES} )
 
+add_executable(create_inverse_reachability_map src/create_inverse_reachability_map.cpp)
+target_link_libraries(create_inverse_reachability_map sphere_discretization robot_kinematics  hdf5_dataset ${catkin_LIBRARIES})
+
 add_executable(debug_visualize_poses src/debug_visualize_poses.cpp)
 target_link_libraries(debug_visualize_poses sphere_discretization ${catkin_LIBRARIES} )
 
 
-#add_executable(create_inverse_reachability_map src/create_inverse_reachability_map.cpp)
-#add_dependencies(create_inverse_reachability_map ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-#target_link_libraries(create_inverse_reachability_map sphere_discretization kinematics  hdf5_dataset ${catkin_LIBRARIES})
+add_executable(load_reachability_map src/load_reachability_map.cpp)
+target_link_libraries(load_reachability_map  hdf5_dataset ${catkin_LIBRARIES})
+
 
 #add_executable(create_capability_map src/create_capability_map.cpp)
 #add_dependencies(create_capability_map ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 #target_link_libraries(create_capability_map sphere_discretization kinematics hdf5_dataset ${catkin_LIBRARIES})
 
-#add_executable(load_reachability_map src/load_reachability_map.cpp)
-#add_dependencies(load_reachability_map ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-#target_link_libraries(load_reachability_map  hdf5_dataset ${catkin_LIBRARIES})
 
 #add_executable(load_capability_map src/load_capability_map.cpp)
 #add_dependencies(load_capability_map ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

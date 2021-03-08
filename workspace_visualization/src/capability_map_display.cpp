@@ -75,7 +75,7 @@ void CapMapDisplay::updateSize()
   }
 }
 
-void CapMapDisplay::processMessage(const map_creator::capability::ConstPtr& msg)
+void CapMapDisplay::processMessage(const reachability_msgs::capability::ConstPtr& msg)
 {
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;

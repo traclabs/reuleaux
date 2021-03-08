@@ -5,7 +5,7 @@
 
 #include <rviz/message_filter_display.h>
 
-#include <map_creator/capability.h>
+#include <reachability_msgs/capability.h>
 #endif
 
 namespace Ogre
@@ -25,7 +25,7 @@ class IntProperty;
 namespace workspace_visualization
 {
 class CapMapVisual;
-class CapMapDisplay : public rviz::MessageFilterDisplay< map_creator::capability >
+class CapMapDisplay : public rviz::MessageFilterDisplay< reachability_msgs::capability >
 {
   Q_OBJECT
 public:
@@ -49,7 +49,7 @@ private Q_SLOTS:
   void updateSize();
 
 private:
-  void processMessage(const map_creator::capability::ConstPtr& msg);
+  void processMessage(const reachability_msgs::capability::ConstPtr& msg);
   std::vector< boost::shared_ptr< CapMapVisual > > visuals_;
 
   rviz::ColorProperty* color_property_;

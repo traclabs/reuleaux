@@ -28,7 +28,7 @@ ReachMapVisual::~ReachMapVisual()
   scene_manager_->destroySceneNode(frame_node_);
 }
 
-void ReachMapVisual::setMessage(const map_creator::WorkSpace::ConstPtr& msg, bool do_display_arrow,
+void ReachMapVisual::setMessage(const reachability_msgs::WorkSpace::ConstPtr& msg, bool do_display_arrow,
                                 bool do_display_sphere, int low_ri, int high_ri, int shape_choice, int disect_choice)
 {
   int low_SphereSize, up_SphereSize;

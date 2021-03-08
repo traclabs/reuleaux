@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="reachability_map" default="fetch_10"/>
+  <arg name="inverse_reach_map" default="inverse_fetch_10"/>
+
+
+  <node name="create_inverse_reachability_map" pkg="reachability" type="create_inverse_reachability_map" respawn="false" output="screen">
+    <param name="reachability_map" value="$(arg reachability_map)"/>
+    <param name="inverse_reach_map" value="$(arg inverse_reach_map)"/>
+  </node>
+
+</launch>

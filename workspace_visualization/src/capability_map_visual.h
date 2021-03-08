@@ -1,7 +1,7 @@
 #ifndef CAPABILITY_MAP_VISUAL_H
 #define CAPABILITY_MAP_VISUAL_H
 
-#include <map_creator/capability.h>
+#include <reachability_msgs/capability.h>
 
 namespace Ogre
 {
@@ -22,7 +22,7 @@ class CapMapVisual
 public:
   CapMapVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node, rviz::DisplayContext* display);
   virtual ~CapMapVisual();
-  void setMessage(const map_creator::capability::ConstPtr& msg, int low_ri, int high_ri, int disect_choice);
+  void setMessage(const reachability_msgs::capability::ConstPtr& msg, int low_ri, int high_ri, int disect_choice);
   void setFramePosition(const Ogre::Vector3& position);
   void setFrameOrientation(const Ogre::Quaternion& orientation);
 
