@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="resolution" default="0.15"/>
-  <arg name="filename" default="tracbot_15"/>
+  <arg name="resolution" default="0.05"/>
+  <arg name="filename" default="tracbot_5"/>
   <arg name="chain_start" default="base_footprint"/>
   <arg name="chain_end" default="tracbot/left_hand_stationary_link"/>
   <arg name="urdf_param" default="/robot_description"/>
