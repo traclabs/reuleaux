@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   kdl_parser
   urdf
   reachability_msgs
+  tf2_geometry_msgs
+  cache_utils
 )
 
 find_package(octomap REQUIRED)
@@ -29,12 +31,16 @@ catkin_package(
     sphere_discretization
     robot_kinematics
     hdf5_dataset
+    reachability_helpers
     CATKIN_DEPENDS
     trac_ik_lib
     message_runtime
     kdl_parser
     urdf
     reachability_msgs
+    tf2
+    tf2_geometry_msgs
+    cache_utils
 )
 
 include_directories(include
@@ -52,6 +58,9 @@ target_link_libraries(robot_kinematics  ${catkin_LIBRARIES} -llapack)
 add_library(hdf5_dataset  src/hdf5_dataset.cpp)
 target_link_libraries(hdf5_dataset  ${catkin_LIBRARIES} ${HDF5_LINK_LIBRARIES})
 
+add_library(reachability_helpers src/helpers.cpp)
+target_link_libraries(reachability_helpers  hdf5_dataset ${catkin_LIBRARIES})
+
 
 add_executable(create_reachability_map src/create_reachability_map.cpp)
 target_link_libraries(create_reachability_map sphere_discretization robot_kinematics hdf5_dataset ${catkin_LIBRARIES} )
@@ -62,9 +71,18 @@ target_link_libraries(create_inverse_reachability_map sphere_discretization robo
 add_executable(debug_visualize_poses src/debug_visualize_poses.cpp)
 target_link_libraries(debug_visualize_poses sphere_discretization ${catkin_LIBRARIES} )
 
-
 add_executable(load_reachability_map src/load_reachability_map.cpp)
-target_link_libraries(load_reachability_map  hdf5_dataset ${catkin_LIBRARIES})
+target_link_libraries(load_reachability_map  reachability_helpers ${catkin_LIBRARIES})
+
+add_executable(load_reachability_map_message src/load_reachability_map_message.cpp)
+target_link_libraries(load_reachability_map_message reachability_helpers ${catkin_LIBRARIES})
+
+
+add_executable(transform_reachability_to_ros_message src/transform_reachability_to_ros_message.cpp)
+target_link_libraries(transform_reachability_to_ros_message reachability_helpers ${catkin_LIBRARIES})
+
+add_executable(create_inverse_reachability_map_from_message src/create_inverse_reachability_map_from_message.cpp)
+target_link_libraries(create_inverse_reachability_map_from_message reachability_helpers sphere_discretization ${catkin_LIBRARIES})
 
 
 #add_executable(create_capability_map src/create_capability_map.cpp)
@@ -81,7 +99,7 @@ target_link_libraries(load_reachability_map  hdf5_dataset ${catkin_LIBRARIES})
 #  target_link_libraries(utest sphere_discretization ${catkin_LIBRARIES})
 #endif()
 
-install(TARGETS sphere_discretization hdf5_dataset robot_kinematics
+install(TARGETS sphere_discretization hdf5_dataset robot_kinematics reachability_helpers
  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} 
 )

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="reachability_map" default="tracbot_5_ros_message"/>
+  <arg name="inverse_reach_map" default="inverse_tracbot_5_ros_message"/>
+  <arg name="reference_frame" default="base_footprint"/>
+
+  <node name="create_inverse_reachability_map_from_message" pkg="reachability" type="create_inverse_reachability_map_from_message" respawn="false" output="screen">
+    <param name="reachability_map" value="$(arg reachability_map)"/>
+    <param name="inverse_reach_map" value="$(arg inverse_reach_map)"/>
+    <param name="reference_frame" value="$(arg reference_frame)"/>
+  </node>
+
+</launch>

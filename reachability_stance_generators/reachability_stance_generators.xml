@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<library path="libreachability_stance_generators">
+  <class type="reachability_stance_generators::ReachabilityStanceGenerator" base_class_type="stance_generator_base::StanceGeneratorBase">
+    <description> This is a StanceGeneratorBase plugin for generating extremely naive stances </description>
+  </class>
+
+</library>

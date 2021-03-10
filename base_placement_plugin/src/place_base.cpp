@@ -195,7 +195,7 @@ void PlaceBase::findbase(std::vector< geometry_msgs::Pose > grasp_poses)
         tf2::Quaternion quat(final_base_poses[i].orientation.x, final_base_poses[i].orientation.y,
                              final_base_poses[i].orientation.z, final_base_poses[i].orientation.w);
         tf2::Matrix3x3 m(quat);
-
+	
         double roll, pitch, yaw;
         m.getRPY(roll, pitch, yaw);
         ROS_INFO("Optimal base pose[%d]: Position: %f, %f, %f, Orientation: %f, %f, %f", i + 1,

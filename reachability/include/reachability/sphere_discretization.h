@@ -47,7 +47,12 @@ public:
   octomap::OcTree* generateBoxTree(const octomap::point3d& origin,
 				   float diameter,
 				   float resolution);
+  
+  octomap::OcTree* generateBoxTree(const octomap::point3d& pmin,
+				   const octomap::point3d& pmax,
+				   float resolution);
 
+  
   //! Creating a sphere with points and return poincloud
   octomap::Pointcloud make_sphere_points(const octomap::point3d& origin,
 					 double r);

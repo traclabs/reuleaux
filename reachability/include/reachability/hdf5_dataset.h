@@ -1,5 +1,5 @@
-#ifndef HDF5_DATASET_H
-#define HDF5_DATASET_H
+#pragma once
+
 //#include <H5Cpp.h>
 #include <hdf5/serial/hdf5.h>
 #include <iostream>
@@ -66,4 +66,4 @@ private:
 };
 
 }  // namespace hdf5_dataset
-#endif  // HDF5_DATASET_H
+

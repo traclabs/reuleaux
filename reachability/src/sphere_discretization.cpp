@@ -87,6 +87,39 @@ octomap::OcTree* SphereDiscretization::generateBoxTree(const octomap::point3d& o
   return tree;
 };
 
+octomap::OcTree* SphereDiscretization::generateBoxTree(const octomap::point3d& pmin,
+						       const octomap::point3d& pmax,
+						       float resolution)
+{
+  octomap::OcTree* tree = new octomap::OcTree(resolution / 2);
+  octomap::Pointcloud p;
+
+  for (float x = pmin.x();
+       x <= pmax.x();
+       x += resolution)
+  {
+    for (float y = pmin.y();
+	 y <= pmax.y();
+	 y += resolution)
+    {
+      for (float z = pmin.z();
+	   z <= pmax.z();
+	   z += resolution)
+      {
+        // tree ->insertRay(origin, point3d(x,y,z));
+        octomap::point3d point;
+        point.x() = x;
+        point.y() = y;
+        point.z() = z;
+        tree->updateNode(point, true);
+      }
+    }
+  }
+
+  return tree;
+};
+
+  
 octomap::Pointcloud SphereDiscretization::make_sphere_points(const octomap::point3d& origin, double r)
 {
   octomap::Pointcloud spherePoints;
@@ -608,6 +641,8 @@ void SphereDiscretization::findOptimalPosebyAverage(const std::vector< geometry_
   final_base_pose.orientation.w = final_base_quat[3];
 }
 
+					 
+  
 void SphereDiscretization::associatePose(std::multimap< std::vector< double >, std::vector< double > >& baseTrnsCol,
                                          const std::vector< geometry_msgs::Pose >& grasp_poses,
                                          const std::multimap< std::vector< double >, std::vector< double > >& PoseColFilter,

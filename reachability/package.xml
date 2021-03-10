@@ -20,6 +20,10 @@
   <depend>kdl_parser</depend>
   <depend>urdf</depend>
   <depend>reachability_msgs</depend>
+  <depend>cache_utils</depend>
+  <depend>tf2_geometry_msgs</depend>
+  
+  <depend>libcereal-dev</depend>
   
   <export>
   </export>

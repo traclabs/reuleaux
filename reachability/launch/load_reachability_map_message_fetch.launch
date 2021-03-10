@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="reference_frame" default="base_link"/>
+  <arg name="reachability_map" default="inverse_fetch_5_ros_message"/>
+  <arg name="rviz" default="true"/>
+
+  <!--<param name="robot_description" command="$(find xacro)/xacro '$(find craftsman_robots)/urdf/fetch/fetch.urdf.xacro'"/>-->
+
+  <node name="load_reachability_map_message" pkg="reachability" type="load_reachability_map_message" respawn="false" output="screen">
+    <param name="reference_frame" value="$(arg reference_frame)"/>
+    <param name="reachability_map" value="$(arg reachability_map)"/>
+  </node>
+
+
+  <!-- Rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find reachability)/rviz/fetch_reachability.rviz" respawn="false" output="screen" launch-prefix="nice" if="$(arg rviz)"/>
+
+
+</launch>

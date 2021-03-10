@@ -1,4 +1,7 @@
-// The inverse reachability map depends on the reachability map. It is an inversion of the poses to the base location
+/***
+ * @file create_inverse_reachability_map.cpp
+ * @brief The inverse reachability map depends on the reachability map. It is an inversion of the poses to the base location
+ */
 #include <ros/ros.h>
 #include <ros/package.h>
 
@@ -59,7 +62,6 @@ int main(int argc, char **argv)
 
   inverse_reach_map_fullname_ = path + inverse_reach_map_ + std::string(".h5");
   
-
   ros::Rate loop_rate(10);
 
   int count = 0;
@@ -85,20 +87,21 @@ int main(int argc, char **argv)
     // point
     octomap::point3d origin = octomap::point3d(0, 0, 0); 
     octomap::OcTree *tree = sd.generateBoxTree(origin, size_of_box, resolution);
-    std::vector< octomap::point3d > new_data;
+    std::vector< octomap::point3d > node_coordinates;
 
     std::vector< geometry_msgs::Pose > pose;
     sd.make_sphere_poses(origin, resolution, pose);  // calculating number of points on a sphere by discretization
 
-    for (octomap::OcTree::leaf_iterator it = tree->begin_leafs(max_depth), end = tree->end_leafs();
-	 it != end;
-	 ++it)
-      new_data.push_back(it.getCoordinate());
+    for (octomap::OcTree::leaf_iterator it = tree->begin_leafs(max_depth),
+	   end = tree->end_leafs();
+	 it != end; ++it)
+      node_coordinates.push_back(it.getCoordinate());
 
-    ROS_INFO("Number of poses in RM: %lu", pose_col_filter.size());
-    ROS_INFO("Number of voxels: %lu", new_data.size());
+    ROS_INFO("Number of poses in RM: %lu (what you loaded)", pose_col_filter.size());
+    ROS_INFO("Number of voxels: %lu (what you intend to fill)", node_coordinates.size());
 
-    /// All the poses are transformed in transformation matrices. For all the transforms, the translation part is
+    // All the poses are transformed in transformation matrices.
+    // For all the transforms, the translation part is
     // extracted and compared with voxel centers by Nighbors within voxel search
     pcl::PointCloud< pcl::PointXYZ >::Ptr cloud(new pcl::PointCloud< pcl::PointXYZ >);
     
@@ -144,12 +147,12 @@ int main(int argc, char **argv)
     pcl::octree::OctreePointCloudSearch< pcl::PointXYZ > octree(resolution);
     octree.setInputCloud(cloud);
     octree.addPointsFromInputCloud();
-    for (int i = 0; i < new_data.size(); i++)
+    for (int i = 0; i < node_coordinates.size(); i++)
     {
       pcl::PointXYZ search_point;
-      search_point.x = new_data[i].x();
-      search_point.y = new_data[i].y();
-      search_point.z = new_data[i].z();
+      search_point.x = node_coordinates[i].x();
+      search_point.y = node_coordinates[i].y();
+      search_point.z = node_coordinates[i].z();
 
       // Neighbors within voxel search
 
@@ -187,19 +190,19 @@ int main(int argc, char **argv)
             base_trns_col.insert(std::make_pair(base_sphere, base_pose));
           }
         }
-       }
+      }
     }
 
     MapVecDoublePtr sphere_color;
-   for (MultiMapPtr::iterator it = base_trns_col.begin(); it!=base_trns_col.end(); ++it)
-   {
-     const std::vector<double>* sphere_coord = it->first;
-     float d = (float(base_trns_col.count(sphere_coord)) / pose.size()) * 100;
-     sphere_color.insert( std::make_pair(it->first, double(d)));
-   }
+    for (MultiMapPtr::iterator it = base_trns_col.begin(); it!=base_trns_col.end(); ++it)
+    {
+      const std::vector<double>* sphere_coord = it->first;
+      float d = (float(base_trns_col.count(sphere_coord)) / pose.size()) * 100;
+      sphere_color.insert( std::make_pair(it->first, double(d)));
+    }
 
-   ROS_INFO("Numer of Spheres in RM: %lu", sphere_col.size());
-   ROS_INFO("Numer of Spheres in IRM: %lu", sphere_color.size());
+    ROS_INFO("Numer of Spheres in RM: %lu", sphere_col.size());
+    ROS_INFO("Numer of Spheres in IRM: %lu", sphere_color.size());
 
    ROS_INFO("All the poses have Processed. Now saving data to a inverse Reachability Map.");
 

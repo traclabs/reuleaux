@@ -71,6 +71,7 @@ bool Hdf5Dataset::open()
   this->attr_ = H5Aopen(this->sphere_dataset_, "Resolution", H5P_DEFAULT);
   herr_t ret = H5Aread(this->attr_, H5T_NATIVE_FLOAT, &this->res_);
 
+  return (ret >= 0);
 }
 
 bool Hdf5Dataset::open_cap()
@@ -414,8 +415,8 @@ bool Hdf5Dataset::h5ToVectorCap(VectorOfVectors &capability_data)
 
 bool Hdf5Dataset::h5ToMultiMapPosesAndSpheres(MultiMapPtr& pose_col, MapVecDoublePtr& sphere_col)
 {
-  //The process of creting typedef MultiMap is little bit tricky.
-  //As the data are read from the h5 file as chuck of array, the retrieved sphere addresses comes different for every sphere
+  //The process of creating typedef MultiMap is little bit tricky.
+  //As the data are read from the h5 file as chunk of array, the retrieved sphere addresses comes different for every sphere
   //But that is not the case for our map structure. Every sphere with same coordinate has same address in h5
   //So to create the exact same Multimap and Map while maintaining the same strcture, we have to assign the spheres that have the same coordinates, with the same address
   //Otherwise when we will be loading the dataset for visualization or other taks such as inverse map, the comparison between the coordinates of sphere dataset and
@@ -568,8 +569,12 @@ bool Hdf5Dataset::h5ToResolution(float &resolution)
 }
 
 
-
-bool Hdf5Dataset::loadMapsFromDataset(MultiMapPtr& poses, MapVecDoublePtr& spheres, float &resolution)
+/**
+ * @function loadMapsFromDataset
+ */
+bool Hdf5Dataset::loadMapsFromDataset(MultiMapPtr& poses,
+				      MapVecDoublePtr& spheres,
+				      float &resolution)
 {
   h5ToMultiMapPosesAndSpheres(poses, spheres);
   h5ToResolution(resolution);
@@ -577,7 +582,11 @@ bool Hdf5Dataset::loadMapsFromDataset(MultiMapPtr& poses, MapVecDoublePtr& spher
   return 0;
 }
 
-bool Hdf5Dataset::loadMapsFromDataset(MultiMapPtr& poses, MapVecDoublePtr& spheres)
+/**
+ * @function loadMapsFromDataset
+ */
+bool Hdf5Dataset::loadMapsFromDataset(MultiMapPtr& poses,
+				      MapVecDoublePtr& spheres)
 {
   h5ToMultiMapPosesAndSpheres(poses, spheres);
   close();
@@ -585,7 +594,8 @@ bool Hdf5Dataset::loadMapsFromDataset(MultiMapPtr& poses, MapVecDoublePtr& spher
 }
 
 
-bool Hdf5Dataset::loadMapsFromDataset(MultiMap& poses, MapVecDouble& spheres)
+bool Hdf5Dataset::loadMapsFromDataset(MultiMap& poses,
+				      MapVecDouble& spheres)
 {
   h5ToMultiMapPoses(poses);
   h5ToMultiMapSpheres(spheres);

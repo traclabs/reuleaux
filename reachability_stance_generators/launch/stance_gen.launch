@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gen_stances" default="false"/>
+  <arg name="robot_name" default=""/>
+  <arg name="generator" default="TRACStanceGenerator"/>
+  <arg name="joint_state_topic" default="/joint_states"/>
+  <rosparam param="gen_stances" subst_value="True">$(arg gen_stances)</rosparam>
+  <group if="$(arg gen_stances)">
+    <node name="stance_generator_interface" pkg="stance_generator_interface" type="stance_generator_interface" respawn="false" output="screen">
+      <param name="robot_name" value="$(arg robot_name)"/>
+      <param name="plugin_name" value="craftsman_stance_generators::$(arg generator)"/>
+      <param name="joint_state_topic" value="$(arg joint_state_topic)"/>
+    </node>
+  </group>
+</launch>
